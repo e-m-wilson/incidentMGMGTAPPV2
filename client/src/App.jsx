@@ -4,7 +4,7 @@ import Home from "./Home.jsx";
 import About from "./About.jsx";
 import NotFound from "./NotFound.jsx";
 import styles from "./App.module.css";
-import { AuthContext } from "./AuthProvider.jsx";
+import { AuthContext } from "./AuthContext.js";
 import { useContext } from "react";
 
 function App() {

@@ -7,7 +7,7 @@ import {
   Grid,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "./AuthContext.js";
 import axios from "axios";
 
 export default function Home() {

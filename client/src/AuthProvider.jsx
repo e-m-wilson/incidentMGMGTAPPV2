@@ -1,13 +1,6 @@
-import { createContext, useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
-
-export const AuthContext = createContext({
-  isLogged: false,
-  checking: true,
-  reload: () => {},
-  logout: () => {},
-  login: () => {},
-});
+import { AuthContext } from "./AuthContext.js";
 
 export function AuthProvider({ children }) {
   const [isLogged, setIsLogged] = useState(false);
@@ -26,19 +19,26 @@ export function AuthProvider({ children }) {
 
   const reload = useCallback(async () => {
     setChecking(true);
-    const r = await axios.get("http://localhost:3001/auth/status", {
-      withCredentials: true,
-    });
-    setIsLogged(Boolean(r.data.authenticated));
+    try {
+      const r = await axios.get("http://localhost:3001/auth/status", {
+        withCredentials: true,
+      });
+      setIsLogged(Boolean(r.data.authenticated));
+    } catch (err) {
+      setIsLogged(false);
+    } finally {
+      setChecking(false);
+    }
   }, []);
 
   useEffect(() => {
     reload();
   }, [reload]);
 
-  return (
-    <AuthContext.Provider value={{ isLogged, checking, login, reload, logout }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ isLogged, checking, login, reload, logout }),
+    [isLogged, checking, login, reload, logout]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -154,4 +154,26 @@ app.get("/api/incidents", async (req, res) => {
   }
 });
 
+app.post("api/incident", async (req, res) => {
+  const sid = req.cookies.sid;
+  const session = tokenStore.get(sid);
+
+  if (!session.access_token) return res.status(401).send("Not Authenticated");
+
+  const data = {
+    urgency: req.body.urgency,
+    impact: req.body.impact,
+    short_description: req.body.short_description,
+  };
+
+  try {
+    const resp = await axios.post(
+      "https://dev208882.service-now.com/api/now/table/incident?sysparm_fields=number",
+      JSON.stringify(data)
+    );
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 app.listen(3001, () => console.log("BFF on 3001"));
